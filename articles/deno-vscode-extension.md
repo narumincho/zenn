@@ -10,7 +10,7 @@ published_at: "2022-12-10 10:00"
 
 [Deno Advent Calendar 2023](https://qiita.com/advent-calendar/2023/deno) 10 日目の記事です
 
-deno って便利ですよね [アドベントカレンダー 1 日目の記事](https://zenn.dev/magurotuna/articles/run-zenn-cli-with-deno)に書かれているように zenn CLI も Deno で動かすことができます
+deno って便利ですよね [アドベントカレンダー 1 日目の記事](https://zenn.dev/magurotuna/articles/run-zenn-cli-with-deno)に書かれているように zenn CLI も Deno で動かすことができます. (現在動かしてみたところ macOSでは動きましたが, Windowsではなぜか型エラーが発生してしまっています)
 
 ところで VSCode 拡張機能を作成したことがありますか? 今回は Node.js を使わず Deno を使って VSCode 拡張機能を作成する方法を紹介します
 
