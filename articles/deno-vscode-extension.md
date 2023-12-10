@@ -5,8 +5,8 @@ type: "tech"
 topics:
   - "deno"
   - "vscode"
-published: false
-published_at: "2022-12-10 10:00"
+published: true
+published_at: "2022-12-10 20:00"
 ---
 
 [Deno Advent Calendar 2023](https://qiita.com/advent-calendar/2023/deno) 10 日目の記事です
