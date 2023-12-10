@@ -32,14 +32,14 @@ VSCode 拡張機能だからといって 「VSCode でのみ動く」という�
 
 また, [Web Extensions](https://code.visualstudio.com/api/extension-guides/web-extensions)の仕様に従っていれば, Web 版 VSCode の https://vscode.dev/ で動かすこともできます. GitHub リポジトリで `.` キーを押すことで開くことができる https://github.dev/ でも動かすことができます.
 
-↓Web Extensions に一部機能が対応している拡張機能[Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) を vscode.dev で動作させている
+↓ 一部機能が Web Extensions に対応している 拡張機能[Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python) を vscode.dev で動作させている
 ![vscode-web-python-extension](/images/vscode-web-python-extension.png)
 
-似たようなものに, Github Codespaces がありますが, これは GitHub のサーバー内でコンテナを起動させているので, Web Extensions じゃなくても動作させることができますが, ある程度使うとお金がかかるようになっています.
+似たようなものに, Github Codespaces がありますが, これは GitHub のサーバー内でコンテナを起動させているので, Web Extensions じゃなくても動作させることができますが, ある程度使うとお金がかかります
 
 # VSCode 拡張機能の構造
 
-最終的に zip みたいに複数のファイルとフォルダーをまとめた VSIX というファイル形式にして拡張機能のレジストリにアップロードしますが, 以下のファイルの構造を出力すれば良いのです.
+最終的に zip みたいに複数のファイルとフォルダーをまとめた VSIX というファイル形式にして拡張機能のレジストリにアップロードしますが, 以下のファイルの構造を出力すれば良いのです
 
 - package.json
 
@@ -65,27 +65,71 @@ VSCode 拡張機能だからといって 「VSCode でのみ動く」という�
 
 解説する上で, Deno の恐竜をファイルサイズによって伸ばすというカスタムエディタを追加する拡張機能を作成しました
 
-リポジトリ
-
 https://github.com/narumincho/vscode-file-size-counter
 
-![vscode-file-size-counter](https://github.com/narumincho/vscode-file-size-counter/assets/16481886/7c79661a-4191-4fa8-a94c-42a56ea31acd)
+https://github.com/narumincho/vscode-file-size-counter/assets/16481886/7c79661a-4191-4fa8-a94c-42a56ea31acd
 
 https://youtu.be/oPfSgk4Oacs
 
-[Custom Editor API](https://code.visualstudio.com/api/extension-guides/custom-editors)を使ってカスタムエディタを作成します
+[Custom Editor API](https://code.visualstudio.com/api/extension-guides/custom-editors)を利用してカスタムエディタを作成します
 
 ## VSCode 拡張機能の開発方法
 
-[公式ドキュメント](https://code.visualstudio.com/api/get-started/your-first-extension)では, yo や generator-code をインストールしていますが, 不要です
+[公式ドキュメント](https://code.visualstudio.com/api/get-started/your-first-extension)では, yo や generator-code をインストールしていますが, 自前でファイルやビルドスクリプトを用意すれば不要です
 
-要求されたファイルの構造にあうものを出力するプログラムを作成します
+まず最初に読み込まれる`package.json`拡張機能の名前, 開発者名, ライセンス, そして拡張機能が提供する機能を記述します. 型定義は用意されていない & まだ作ってないのでドキュメントを見ながら書きましょう
 
-## メイン
+https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/build.ts#L58-L96
 
-## クライアント
+`contributes` に拡張機能が提供する機能を記述しますが, ここに記述した機能が必要になったタイミングで, `browser` (Web Extension に対応しない機能の分は `main`) に指定した JavaScript の `activate` 関数が呼び出されます
 
-ビルドには [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader)
+https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/main.tsx#L1-L24
+
+TypeScript の記法と import があるので, ビルドスクリプト内で [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader) を呼び VSCode 拡張機能向けの JavaScript に変換しています
+
+---
+
+ややこしいことに, Node.js の環境でもないのに `require("vscode")` で VSCode API をインポート形になってます
+
+例として, このように記述すること, 右下の通知欄からメッセージを表示することができます.
+
+```js
+require("vscode").window.showInformationMessage("Hello World!");
+```
+
+![vscode-notification](/images/vscode-notification.png)
+
+そしてこの VSCode API の型定義は, npm にて[@types/vscode](https://www.npmjs.com/package/@types/vscode)として公開されていますが, npm パッケージの[vscode](https://www.npmjs.com/package/vscode)は非推奨で使い物になりません! そのため, そのまま Deno で使うことができないのです
+
+そこで, Deno で使えるように調整した [deno.land/x/vscode](https://deno.land/x/vscode) を私が作成しました. VSCode のバージョンが上がるたびに手動で更新してます. 今日も更新しました.
+
+手動と言っても, GitHub で公開されている型定義ファイルから Rust の SWC を使って TypeScript のコードを解析して生成しています. class を型と値で分けるみたいなことなど. 完全には自動化できなかったので, 一部手動で修正しています
+
+https://github.com/narumincho/vscode/blob/11a708181074ebef86ca32b41cacbbd527c34cbd/gen/src/main.rs#L9-L19
+
+SWC の使い方メモはこちらに
+
+https://zenn.dev/narumincho/articles/299f91c9ab3100
+
+SWC は TypeScript のコードの解析だけじゃなくて実は生成もできるというね. あまり使われていないのかバグを見つけて報告しました. 速攻で修正されました. 活発なプロジェクトですね. Deno 内部で使われているだけありますね
+
+https://github.com/swc-project/swc/issues/7079
+
+---
+
+activate 関数内でカスタムエディタの開かれたとき, 保存したときどうするかといった設定の`CustomEditorProvider`を [`vscode.window.registerCustomEditorProvider`](https://code.visualstudio.com/api/references/vscode-api#window.registerCustomEditorProvider) に渡してあげれば, カスタムエディタを登録できます
+
+https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/main.tsx#L46-L124
+
+---
+
+WebView 内のスクリプトで完全な VSCode API は直接呼び出すことができませんが, メッセージを送るための API は window に生えているだけなので, npm パッケージの[vscode-webview](https://www.npmjs.com/package/@types/vscode-webview)を type import するだけで型定義を使えます
+
+![import-vscode-webview](/images/import-vscode-webview.png)
+
+メッセージの受け取りは `addEventListener("message", (e) => { ... })` でできます
+
+https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/client.tsx#L37-L41
 
 # VSCode 拡張機能の公開方法
 
