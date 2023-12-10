@@ -4,6 +4,7 @@ emoji: "🛠️"
 type: "tech"
 topics:
   - "deno"
+  - "vscode"
 published: false
 published_at: "2022-12-10 10:00"
 ---
