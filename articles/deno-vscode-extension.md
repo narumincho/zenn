@@ -59,17 +59,33 @@ VSCode 拡張機能だからといって 「VSCode でのみ動く」という�
 - アイコン画像
   ファイル名は package.json で指定されたパス. 拡張機能のページに表示される
 
-その他
+つまり Node.js で開発する必要はありません
 
-# VSCode 拡張機能の開発方法
+## サンプル拡張機能
 
-公式ドキュメントでは, yo や generator-code をインストールしていますが, 不要です
+解説する上で, Deno の恐竜をファイルサイズによって伸ばすというカスタムエディタを追加する拡張機能を作成しました
 
-## サンプル拡張機能の機能
+リポジトリ
+
+https://github.com/narumincho/vscode-file-size-counter
+
+![vscode-file-size-counter](https://github.com/narumincho/vscode-file-size-counter/assets/16481886/7c79661a-4191-4fa8-a94c-42a56ea31acd)
+
+https://youtu.be/oPfSgk4Oacs
+
+[Custom Editor API](https://code.visualstudio.com/api/extension-guides/custom-editors)を使ってカスタムエディタを作成します
+
+## VSCode 拡張機能の開発方法
+
+[公式ドキュメント](https://code.visualstudio.com/api/get-started/your-first-extension)では, yo や generator-code をインストールしていますが, 不要です
+
+要求されたファイルの構造にあうものを出力するプログラムを作成します
 
 ## メイン
 
 ## クライアント
+
+ビルドには [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader)
 
 # VSCode 拡張機能の公開方法
 
