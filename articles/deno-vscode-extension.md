@@ -61,19 +61,19 @@ VSCode 拡張機能だからといって 「VSCode でのみ動く」という�
 
 つまり Node.js で開発する必要はありません
 
-## サンプル拡張機能
+# サンプル拡張機能
 
 解説する上で, Deno の恐竜をファイルサイズによって伸ばすというカスタムエディタを追加する拡張機能を作成しました
 
 https://github.com/narumincho/vscode-file-size-counter
 
-https://github.com/narumincho/vscode-file-size-counter/assets/16481886/7c79661a-4191-4fa8-a94c-42a56ea31acd
-
 https://youtu.be/oPfSgk4Oacs
+
+Deno の恐竜に似てないって...? そこまで作り込む時間がなかった 😢
 
 [Custom Editor API](https://code.visualstudio.com/api/extension-guides/custom-editors)を利用してカスタムエディタを作成します
 
-## VSCode 拡張機能の開発方法
+# VSCode 拡張機能の開発方法
 
 [公式ドキュメント](https://code.visualstudio.com/api/get-started/your-first-extension)では, yo や generator-code をインストールしていますが, 自前でファイルやビルドスクリプトを用意すれば不要です
 
@@ -85,9 +85,9 @@ https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6d
 
 https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/main.tsx#L1-L24
 
-TypeScript の記法と import があるので, ビルドスクリプト内で [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader) を呼び VSCode 拡張機能向けの JavaScript に変換しています
+TypeScript の記法と import があるので, ビルドスクリプト内で [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader) を呼び VSCode 拡張機能向けの JavaScript に変換しています. 今回のサンプル拡張機能の機能は SSR だけで完結するので必要ありませんが WebView 内で動作させるスクリプトも esbuild でビルドしています
 
----
+## deno.land/x/vscode が必要な理由
 
 ややこしいことに, Node.js の環境でもないのに `require("vscode")` で VSCode API をインポート形になってます
 
@@ -103,7 +103,7 @@ require("vscode").window.showInformationMessage("Hello World!");
 
 そこで, Deno で使えるように調整した [deno.land/x/vscode](https://deno.land/x/vscode) を私が作成しました. VSCode のバージョンが上がるたびに手動で更新してます. 今日も更新しました.
 
-手動と言っても, GitHub で公開されている型定義ファイルから Rust の SWC を使って TypeScript のコードを解析して生成しています. class を型と値で分けるみたいなことなど. 完全には自動化できなかったので, 一部手動で修正しています
+手動と言っても, GitHub で公開されている型定義ファイルから Rust の [SWC](https://swc.rs/) を使って TypeScript のコードを解析して生成しています. class を型と値で分けるみたいなことなど. 完全には自動化できなかったので, 一部手動で修正しています
 
 https://github.com/narumincho/vscode/blob/11a708181074ebef86ca32b41cacbbd527c34cbd/gen/src/main.rs#L9-L19
 
@@ -115,13 +115,13 @@ SWC は TypeScript のコードの解析だけじゃなくて実は生成もで�
 
 https://github.com/swc-project/swc/issues/7079
 
----
+## カスタムエディタの登録方法
 
 activate 関数内でカスタムエディタの開かれたとき, 保存したときどうするかといった設定の`CustomEditorProvider`を [`vscode.window.registerCustomEditorProvider`](https://code.visualstudio.com/api/references/vscode-api#window.registerCustomEditorProvider) に渡してあげれば, カスタムエディタを登録できます
 
 https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/main.tsx#L46-L124
 
----
+## WebView 内のスクリプト
 
 WebView 内のスクリプトで完全な VSCode API は直接呼び出すことができませんが, メッセージを送るための API は window に生えているだけなので, npm パッケージの[vscode-webview](https://www.npmjs.com/package/@types/vscode-webview)を type import するだけで型定義を使えます
 
@@ -131,12 +131,52 @@ WebView 内のスクリプトで完全な VSCode API は直接呼び出すこと
 
 https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/client.tsx#L37-L41
 
+## デバッグ方法
+
+https://github.com/narumincho/vscode-file-size-counter/blob/main/.vscode/launch.json に設定を記述したので, VSCode の「実行とデバッグ」機能からデバッグできます. 左のメニューの再生のところです
+
+# 配布するための形式の VSIX ファイルの作成
+
+作成したファイルへカレントディレクトリを移動した後, 以下のコマンドで VSIX ファイルを作成できたらよかったのですが, Windows では型エラーで動作しませんでした...
+
+```sh
+deno run -A npm:@vscode/vsce package
+```
+
+Deno の Node.js 互換性が向上するまでは, 仕方なく Node.js で実行しましょう 🥺
+
+```sh
+npm install -g @vscode/vsce
+vsce package
+```
+
 # VSCode 拡張機能の公開方法
 
-オープンソースのほうも説明
+VSCode の拡張機能のメニュー「Install from VSIX...」からインストールしてもらう形でもインストールできますが, レジストリにアップロードすることによって検索で引っかかり, アップデートの配布がしやすくなります.
 
-https://open-vsx.org/extension/denoland/vscode-deno
+- VSCode, vscode.dev, Github Codespaces 向けには, [Visual Studio Marketplace の VSCode](https://marketplace.visualstudio.com/vscode)
+- VSCodium, GitPod 向けには, [Open VSX Registry](https://open-vsx.org/)
 
-VSCode の拡張機能を開発するには [VSCode Extension API](https://code.visualstudio.com/api) を使います
+で公開する必要があります
 
-deno.land/x/vscode を使って VSCode 拡張機能を作成する方法を紹介します
+実は主要なレジストリが 2 つあるんですね. たまに Visual Studio Marketplace でしか公開されていない拡張機能があるので, その場合は VSCodium, GitPod では使えません. 拡張機能の Deno は両方に公開しています. しっかりしてますね
+
+- Visual Studio Marketplace 向け https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno
+- Open VSX Registry 向け https://open-vsx.org/extension/denoland/vscode-deno
+
+公開方法はドキュメントを参照してください
+
+- [Visual Studio Marketplace での公開方法](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+- [Open VSX Registry での公開方法](https://github.com/eclipse/openvsx/wiki/Publishing-Extensions)
+
+Open VSX Registry での名前空間を作成したあと, 認証マークを付けるには指定されたリポジトリで自分が所有している名前だと主張する Issue を作成することになります
+
+僕の作成した narumincho の所有主張の issue はこちら
+
+https://github.com/EclipseFdn/open-vsx.org/issues/1621
+
+# まとめ
+
+VSCode 拡張機能の実装は esbuild と 僕の作成した deno.land/x/vscode を利用することで比較的簡単にできます
+
+VSIX ファイルの作成が現状 Deno でできないのが残念でしたが, Node.js で TypeScript の設定と向き合うよりは楽だと思います. ぜひ VSCode 拡張機能を開発するときは Deno で開発してみてください
