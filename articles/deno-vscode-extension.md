@@ -21,12 +21,11 @@ Visual Studio Code 略して VSCode は Microsoft が開発しているオープ
 
 例えば, [Git Graph](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph) という拡張機能を入れると, Git のブランチをグラフで表示でき, [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) という拡張機能を入れると, スペルミスを検出してくれます. [Luna Paint — Image Editor](https://marketplace.visualstudio.com/items?itemName=Tyriar.luna-paint)という画像エディタもあります. 拡張機能の[Deno](https://marketplace.visualstudio.com/items?itemName=denoland.vscode-deno)のおかげで Deno のコードを書くときに色々補完してくれています
 
-VSCode 拡張機能だからといって VSCode でのみ動く. というわけではありません.
+VSCode 拡張機能だからといって 「VSCode でのみ動く」というわけではありません.
 
 - VSCode から Microsoft によるトラッキングコードなどを除いた [VSCodium](https://vscodium.com/)
-- [GitPod](https://www.gitpod.io/)
-- 最近話題の AI を機能の中心として設計されたエディタ [Cursor](https://cursor.sh/)
-- ...
+- オンライン IDE [GitPod](https://www.gitpod.io/)
+- 最近話題の AI を中心として設計されたエディタ [Cursor](https://cursor.sh/)
 
 などで動作させることができます
 
@@ -50,6 +49,8 @@ VSCode 拡張機能だからといって VSCode でのみ動く. というわけ
 # VSCode 拡張機能の公開方法
 
 オープンソースのほうも説明
+
+https://open-vsx.org/extension/denoland/vscode-deno
 
 VSCode の拡張機能を開発するには [VSCode Extension API](https://code.visualstudio.com/api) を使います
 
