@@ -85,7 +85,7 @@ https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6d
 
 https://github.com/narumincho/vscode-file-size-counter/blob/6b55e53a518dfdf09d6db8cef731161e14c33abc/main.tsx#L1-L24
 
-TypeScript の記法と import があるので, ビルドスクリプト内で [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader) を呼び VSCode 拡張機能向けの JavaScript に変換しています. 今回のサンプル拡張機能の機能は SSR だけで完結するので必要ありませんが WebView 内で動作させるスクリプトも esbuild でビルドしています
+TypeScript の記法と import があるので, ビルドスクリプト内で [deno.land/x/esbuild](https://deno.land/x/esbuild) と [deno.land/x/esbuild_deno_loader](https://deno.land/x/esbuild_deno_loader) を呼び VSCode 拡張機能向けの JavaScript に変換しています. 今回のサンプル拡張機能の機能は SSR だけで完結するので必要なかったのですが WebView 内で動作させるスクリプトも esbuild でビルドしています
 
 ## deno.land/x/vscode が必要な理由
 
@@ -99,7 +99,7 @@ require("vscode").window.showInformationMessage("Hello World!");
 
 ![vscode-notification](/images/vscode-notification.png)
 
-そしてこの VSCode API の型定義は, npm にて[@types/vscode](https://www.npmjs.com/package/@types/vscode)として公開されていますが, npm パッケージの[vscode](https://www.npmjs.com/package/vscode)は非推奨で使い物になりません! そのため, そのまま Deno で使うことができないのです
+そしてこの VSCode API の型定義は, npm にて[@types/vscode](https://www.npmjs.com/package/@types/vscode)として公開されていますが, npm パッケージの[vscode](https://www.npmjs.com/package/vscode)は非推奨で使い物になりません! そのため, そのまま Deno で import して使うことはできないのです
 
 そこで, Deno で使えるように調整した [deno.land/x/vscode](https://deno.land/x/vscode) を私が作成しました. VSCode のバージョンが上がるたびに手動で更新してます. 今日も更新しました.
 
