@@ -180,3 +180,13 @@ https://github.com/EclipseFdn/open-vsx.org/issues/1621
 VSCode 拡張機能の実装は esbuild と 僕の作成した deno.land/x/vscode を利用することで比較的簡単にできます
 
 VSIX ファイルの作成が現状 Deno でできないのが残念でしたが, Node.js で TypeScript の設定と向き合うよりは楽だと思います. ぜひ VSCode 拡張機能を開発するときは Deno で開発してみてください
+
+# 追記
+
+https://qiita.com/access3151fq/items/b0599c02eced0d6bd0c9
+
+を参考にして, esbuild ではなくて, https://deno.land/x/emit を使ってビルドすることもできました.
+
+https://github.com/narumincho/vscode-file-size-counter/commit/b205b3f0cc33948f8e21b68b58c0b49c5631a2e5
+
+こちらのほうが Deno と同じ SWC を使っているので良いかもしれません
