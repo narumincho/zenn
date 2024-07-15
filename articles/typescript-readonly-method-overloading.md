@@ -8,7 +8,7 @@ published: true
 
 ## 問題点と解決策
 
-Array の reduce メソッドはオーバーロードで設計されています (オーバーロードを使わず[Elm](https://elm-lang.org/)のように初期値が必要な[foldl](https://package.elm-lang.org/packages/elm/core/latest/List#foldl)と[foldl1](https://package.elm-lang.org/packages/elm-community/list-extra/latest/List-Extra#foldl1)のように名前を変える設計の方が僕は好きですが...)
+Array の reduce メソッドはオーバーロードで設計されています (オーバーロードを使わず[Elm](https://elm-lang.org/)のように初期値を指定する[foldl](https://package.elm-lang.org/packages/elm/core/latest/List#foldl)と初期値を指定しない[foldl1](https://package.elm-lang.org/packages/elm-community/list-extra/latest/List-Extra#foldl1)のように名前を変える設計の方が僕は好きですが...)
 
 https://github.com/microsoft/TypeScript/blob/6d3be985c82bead3b41348de76efec8110c677c5/src/lib/es5.d.ts#L1458-L1470
 
