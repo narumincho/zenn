@@ -33,12 +33,12 @@ export const App = () => {
 
 この例では, `setState`を利用して作成した変数の型が`any`になってしまっています
 
-## esm.sh の型定義を利用して解決
+## npm:@types/react を利用して解決する方法
 
-対処法は, このように esm.sh の型定義を利用する方法があります
+npmパッケージ自体に型定義を含めていない場合は, このように `npm:@types/パッケージ名` を利用する方法があります
 
 ```tsx
-// @ts-types="https://esm.sh/react@19.0.0"
+// @ts-types="npm:@types/react"
 import React, { useState } from "npm:react";
 ```
 
@@ -46,9 +46,24 @@ import React, { useState } from "npm:react";
 
 昔は `// @ts-types=` ではなく `// @deno-types=` でしたが, いつのまにか変わったようですね. deno の名前が消えたので, 共通で使えるようにしたいのでしょうか? Deno以外でこの`// @ts-types=`を利用するツールは見つけられませんでした
 
-このように Deno搭載の`npm:` より esm.sh の方がDenoに適していない型定義の指定方法を解釈できる点で 優れています
+## esm.sh を利用して解決する方法
 
-## esm.sh で jsr を利用する方法
+```tsx
+// @ts-types="https://esm.sh/react@19.0.0"
+import React, { useState } from "npm:react";
+```
+
+esm.shの場合, 対応する `@types/` のパッケージを指定することなく型定義を利用することができます
+
+Denoの場合, 対応する`@types/`のパッケージを自動的に利用しません. 型定義が同一のバージョンで提供されている保証がないため. Deno では暗黙の`@types/`パッケージの利用はしないそうです
+
+https://github.com/denoland/deno/issues/20455
+
+@types/パッケージ名 で提供されるこの仕組みは分かりづらいため, Denoが期待するようにパッケージ自体に型定義を含めて欲しいですね. なぜ react パッケージに型定義を含めないのだろうか
+
+bun のように `npm:` をつけなくても npmパッケージだと解釈し動かす. そんな短絡的な実装をしないDenoらしい選択ですね
+
+## [番外] esm.sh で jsr を利用する方法
 
 jsrパッケージ を`jsr:`でインポートしたときに 型定義エラーになることはありえないため利用することはあまり利用することがありませんが, npm と同様に 対応するesm.shのURLがあります
 
@@ -73,7 +88,7 @@ esm.sh のドキュメントどこにも書かれてる場所を見つけられ�
 
 https://github.com/esm-dev/esm.sh/blob/a7cf10c171b359e24ae4e23419ec69e321d9cec9/server/path.go#L91
 
-ありがたいことに型定義ファイルもHTTPレスポンスヘッダーで `Access-Control-Allow-Origin: *`を指定してくれているので, CORSエラーを気にせず, クライアントから直接型定義を取得する方法として活用することができます
+ありがたいことに, 型定義ファイルもHTTPレスポンスヘッダーで `Access-Control-Allow-Origin: *`を指定してくれているので, CORSエラーを気にすることなく, クライアントから直接型定義を取得して活用できます
 
 ---
 
