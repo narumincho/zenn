@@ -1,12 +1,16 @@
 ---
-title: "TypeScript では T[] を使わないようにしよう"
+title: "TypeScript では T[] ではなく ReadonlyArray<T> を使おう"
 emoji: "⚠️"
 type: "tech"
 topics:
   - "typescript"
   - "jsr"
-published: false
+published: true
+published_at: "2025-08-11 18:00"
 ---
+
+# TL;DR
+公開 API では `T[]` を避け, `ReadonlyArray<T>` を使いましょう. 内部実装でのみ`Array<T>`を使うのはok
 
 # Array<T> ではなく ReadonlyArray<T> を使おう
 
@@ -238,11 +242,11 @@ account.name = "B"; // Cannot assign to 'name' because it is a read-only propert
 
 有名な読み取り専用のプロパティは `window.undefined` ですね
 
-ただあまり使われないため V8 などの JavaScript 実行エンジンの最適化が発揮されず実行速度が遅い欠点があります. readonly を使った型チェック時だけの読み取り専用で充分バグを見つけられるため `Object.freeze` を使うことは少ないでしょう
+ただ あまり使われないため V8 などの JavaScript 実行エンジンの最適化が発揮されず遅くなることがあります. readonly を使った型チェック時だけの読み取り専用で充分バグを見つけられるため `Object.freeze` を使うことは少ないでしょう
 
-# JavaScript への機能追加
+# JavaScript への機能追加の提案の状況
 
-## JavaScript Records & Tuples Proposal
+## JavaScript Records & Tuples Proposal (撤回)
 「JavaScript Records & Tuples Proposal」という提案がありましたが 今年 2025年に撤回されました
 
 https://github.com/tc39/proposal-record-tuple/blob/d19ccc0372cb7140e6a9b7a010f6219233e552f1/README.md#L108-L127
@@ -251,17 +255,17 @@ https://github.com/tc39/proposal-record-tuple/issues/394
 
 デフォルトで読み取り専用のステキな提案でしたが, 新たに構文とプリミティブ型を追加するのはとても大変なので撤回されたのは仕方ないと思います
 
-## proposal Composites
+## proposal Composites (Stage 1)
 
 https://github.com/tc39/proposal-composites/blob/ae5ea98e7c966581f46af37e80f954335ad78948/README.md#L72-L80
 
 https://github.com/tc39/proposal-composites
 
-`Object.freeze` のようにオブジェクトをつくってから読み取り専用にするアプローチ. 例で挙げられているように`Set`, `Map` のキーでの活用が進みそう
+`Object.freeze` のようにオブジェクトをつくってから読み取り専用にするアプローチ. 例で挙げられているように`Set`, `Map` のキーでの活用が進みそう. それ以外のオブジェクトでは, 実行エンジンの最適化とTypeScriptが対応すれば使われると思われます
 
 # 最後に
 
-デフォルトが変更可能になってしまったTypeScriptでReadonlyを使おうという啓蒙活動をするよりも, デフォルトで読み取り専用になっているRustなどの言語の啓蒙活動のほうが, 各個人が覚えることが少なくて良い気もする
+デフォルトが変更可能になってしまったTypeScriptでReadonlyを使おうという啓蒙活動をするよりも, デフォルトで読み取り専用になっているRustなどの言語の啓蒙活動のほうが, 各個人が覚えることが少なくて間違うことも減り良い気もする
 
 # 参考
 
