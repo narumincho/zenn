@@ -10,11 +10,11 @@ published_at: "2025-08-11 18:00"
 ---
 
 # TL;DR
-公開 API では `T[]` を避け, `ReadonlyArray<T>` を使いましょう. 内部実装でのみ`Array<T>`を使うのはok
+公開 API では `T[]` を避け, `ReadonlyArray<T>` を使いましょう. 内部実装でのみ`Array<T>`を使うのはOK
 
 # Array<T> ではなく ReadonlyArray<T> を使おう
 
-以下のコードには受け取った配列をソートして表示する sortLog 関数と, 0番目の要素を 999 にして表示する setLog 関数を定義して使用しています
+以下のコードには受け取った配列をソートして表示する sortLog 関数と, 0番目の要素を 999 にした配列を表示する setLog 関数を定義して使用しています
 
 ```ts
 const sortLog = (array: Array<number>): void => {
@@ -55,7 +55,7 @@ setLog(array); // [ 999, 1, 3]
 console.log(array); // [ 2, 1, 3]
 ```
 
-React のコンポーネントの Props など破壊的変更を使うことを意図していないのなら必ず `ReadonlyArray<T>` で指定することを強くおすすめします. そうすることによって`Array<T>` を「破壊的変更を意図している」という意味で使うことができます
+React のコンポーネントの Props など破壊的変更をするを意図していないのなら必ず `ReadonlyArray<T>` で指定することを強くおすすめします. そうすることによって`Array<T>` を「破壊的変更を意図している」という意味で使うことができます
 
 - Deno KV の [Deno.KvKey](https://docs.deno.com/api/deno/~/Deno.KvKey)
 - GraphQL サーバーの実装にほぼ使うであろう, 取得をまとめてするためのライブラリ [dataloader](https://github.com/graphql/dataloader) の DataLoader 定義に使う keys
@@ -242,7 +242,7 @@ account.name = "B"; // Cannot assign to 'name' because it is a read-only propert
 
 有名な読み取り専用のプロパティは `window.undefined` ですね
 
-ただ あまり使われないため V8 などの JavaScript 実行エンジンの最適化が発揮されず遅くなることがあります. readonly を使った型チェック時だけの読み取り専用で充分バグを見つけられるため `Object.freeze` を使うことは少ないでしょう
+ただ あまり使われないため V8 などの JavaScript 実行エンジンの最適化が発揮されず遅くなることがあります. readonly を使った型チェック時だけでも充分バグを見つけられるため `Object.freeze` を使うことは少ないでしょう
 
 # JavaScript への機能追加の提案の状況
 
@@ -253,7 +253,7 @@ https://github.com/tc39/proposal-record-tuple/blob/d19ccc0372cb7140e6a9b7a010f62
 
 https://github.com/tc39/proposal-record-tuple/issues/394
 
-デフォルトで読み取り専用のステキな提案でしたが, 新たに構文とプリミティブ型を追加するのはとても大変なので撤回されたのは仕方ないと思います
+デフォルトで読み取り専用になるステキな提案でしたが, 新たに構文とプリミティブ型を追加するのはとても大変なので撤回されたのは仕方ないと思います
 
 ## proposal Composites (Stage 1)
 
@@ -261,11 +261,11 @@ https://github.com/tc39/proposal-composites/blob/ae5ea98e7c966581f46af37e80f9543
 
 https://github.com/tc39/proposal-composites
 
-`Object.freeze` のようにオブジェクトをつくってから読み取り専用にするアプローチ. 例で挙げられているように`Set`, `Map` のキーでの活用が進みそう. それ以外のオブジェクトでは, 実行エンジンの最適化とTypeScriptが対応すれば使われると思われます
+`Object.freeze` のようにオブジェクトをつくってから読み取り専用にするアプローチ. 例で挙げられているように`Set`, `Map` のキーでの活用が進みそう. それ以外のオブジェクトでは, 実行エンジンの最適化とTypeScriptが対応すれば使われるようになると思います
 
 # 最後に
 
-デフォルトが変更可能になってしまったTypeScriptでReadonlyを使おうという啓蒙活動をするよりも, デフォルトで読み取り専用になっているRustなどの言語の啓蒙活動のほうが, 各個人が覚えることが少なくて間違うことも減り良い気もする
+デフォルトが変更可能になってしまったTypeScriptで, 「Readonlyを使おう」という啓蒙活動をするよりも, デフォルトで読み取り専用になっているRustなどの言語の啓蒙活動のほうが, 各個人が覚えることが少なく 間違うことも減り良い気もする
 
 # 参考
 
