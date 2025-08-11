@@ -164,7 +164,7 @@ console.log(newMap); // Map(3) { 1 => "A", 2 => "BB", 3 => "C" }
 console.log(readonlyMap); // Map(3) { 1 => "A", 2 => "B", 3 => "C" }
 ```
 
-2025年時点 `ReadonlyArray` に比べて非破壊的に操作するメソッドがないため. 色々操作するときはスコープを関数中に収めて `Set` `Map` を使いましょう
+`ReadonlyArray` に比べて非破壊的に操作するメソッドがないため. 色々操作するときはスコープを関数中に収めて `Set` `Map` を使いましょう
 
 # ReadonlyUint8Array, ReadonlyURL...
 
@@ -183,7 +183,7 @@ https://github.com/microsoft/TypeScript/issues/37792
 
 ---
 
-代わりに 私が JSR　パッケージを作ったので良かったら使ってくださいね
+代わりに 私が JSRパッケージを作ったので良かったら使ってくださいね
 - [ReadonlyUint8Array](https://jsr.io/@narumincho/readonly/doc/~/ReadonlyUint8Array)
 - [ReadonlyURL](https://jsr.io/@narumincho/readonly/doc/~/ReadonlyURL)
 
@@ -218,9 +218,9 @@ account.name = "B"; // Cannot assign to 'name' because it is a read-only propert
 
 私の個人のプロジェクトでは読み取り専用としか使わない場合は, 全部 readonly をつけています. 私は少しでも型安全性が上がるならタイプ数が増えても良いと考えていますが, タイプ数や余計な修飾子を付けたくない人もいるようです
 
-## Object.defineProperty
+## Object.freeze
 
-[Object.defineProperty](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty), [Object.defineProperties](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties) を使って型チェック時だけでなく, 実行時にも読み取り不可にすることもできます
+[Object.freeze](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) を使って型チェック時だけでなく, 実行時にも読み取り不可にすることもできます
 
 ```ts
 type Account = {
@@ -228,34 +228,36 @@ type Account = {
   readonly name: string;
 };
 
-const createAccount = (
-  { id, name }: { readonly id: string; readonly name: string },
-) =>
-  Object.defineProperties<Account>({} as Account, {
-    id: {
-      value: id,
-    },
-    name: {
-      value: name,
-      // デフォルトで writable: false なため指定不要
-    },
-  });
-
-const account: Account = createAccount({
+const account: Account = Object.freeze({
   id: crypto.randomUUID(),
   name: "A",
 });
 
-account.name = "B"; // TypeError: Cannot assign to read only property 'name' of object '#<Object>'
+account.name = "B"; // Cannot assign to 'name' because it is a read-only property.
 ```
 
 有名な読み取り専用のプロパティは `window.undefined` ですね
 
-ただあまり使われないため V8 などの JavaScript 実行エンジンの最適化の機能が発揮されにくい欠点があります. readonly を使った型チェック時だけの読み取り専用で充分バグを見つけられるため `Object.defineProperty` を使うことは少ないでしょう. Vue 2 では `Object.defineProperty`, Vue 3では `Proxy` が内部の処理で使われているようです
+ただあまり使われないため V8 などの JavaScript 実行エンジンの最適化が発揮されず実行速度が遅い欠点があります. readonly を使った型チェック時だけの読み取り専用で充分バグを見つけられるため `Object.freeze` を使うことは少ないでしょう
 
-# record, tuple の話
+# JavaScript への機能追加
 
+## JavaScript Records & Tuples Proposal
+「JavaScript Records & Tuples Proposal」という提案がありましたが 今年 2025年に撤回されました
 
+https://github.com/tc39/proposal-record-tuple/blob/d19ccc0372cb7140e6a9b7a010f6219233e552f1/README.md#L108-L127
+
+https://github.com/tc39/proposal-record-tuple/issues/394
+
+デフォルトで読み取り専用のステキな提案でしたが, 新たに構文とプリミティブ型を追加するのはとても大変なので撤回されたのは仕方ないと思います
+
+## proposal Composites
+
+https://github.com/tc39/proposal-composites/blob/ae5ea98e7c966581f46af37e80f954335ad78948/README.md#L72-L80
+
+https://github.com/tc39/proposal-composites
+
+`Object.freeze` のようにオブジェクトをつくってから読み取り専用にするアプローチ. 例で挙げられているように`Set`, `Map` のキーでの活用が進みそう
 
 # 最後に
 
