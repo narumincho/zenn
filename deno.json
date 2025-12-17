@@ -1,5 +1,5 @@
 {
-    "tasks": {
-        "preview": "deno run -A npm:zenn-cli"
-    }
+  "tasks": {
+    "preview": "deno run -A npm:zenn-cli"
+  }
 }
