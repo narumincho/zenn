@@ -95,11 +95,19 @@ export function otherFunction(array: ReadonlyArray<string>) {}
 かわからない
 :::
 
-他のファイルの関数の型や実装の情報が欲しくなりますが, Deno Lint Plugin では他のファイルを読み取って使うことはできないようです
+他のファイルの関数の型や実装の情報が欲しくなりますが, Deno Lint Plugin では他のファイルを読み取って使うことはできないようです. 同一ファイル内だったら`context.sourceCode.ast`か`node.parent`から辿っていけば, 読み取れます
 
 React の フックのように関数名で `use` から始まるみたいな制約があれば, 厳密に作れたかなと思います
 
 コンポーネント(大文字で始まる関数)やフックではない普通の関数でフックを使うとエラーになる React フック の Lint ルール は Deno Lint Plugin で作れると思います
+
+React は Lint 実装のために関数名にルールを設けていた?
+
+---
+
+関連: `throw` を使う関数名を `do` から始めるというルール + Deno Lint Plugin
+
+https://zenn.dev/mizchi/articles/deno-lint-plugin-do-try
 
 # その他
 
@@ -111,6 +119,6 @@ Deno VSCode 拡張機能/Deno LSP で deno.json の補完を強化させよう�
 
 https://github.com/denoland/vscode_deno/blob/c7ad27c8b2077946b1f64d90269be4de5be968f0/package.json#L609
 
-動的にチェックするようにしても, deno.json は多くの機能で使われておりメンテナンスが大変そう & `deno lint`コマンドを実行すれば指定ミスがわかるので 特になにもしないことに決めました
+動的にチェックするようにしても, deno.json は多くの機能で使われておりメンテナンスが大変そう & `deno lint`コマンドを実行すれば指定ミスがわかるので とりあえず 何もしないことにします
 
 あと, Lint ルールを調整するパラメーターを定義, 使う方法はなさそうです
