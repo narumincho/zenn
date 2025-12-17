@@ -17,7 +17,7 @@ Deno Lint は Deno に同梱された TypeScript の Linter です. `deno lint` 
 ちなみに Deno のバージョンアップで `deno check .` ではなく `deno check` [だけで良くなりました](https://github.com/denoland/deno/pull/28655) `deno lint` `deno fmt` も同様(いつからできていたかは忘れました)
 :::
 
-Deno Lint について詳しくは [17 日の記事](TODO) で書かれています
+Deno Lint について詳しくは 17 日目の記事（後ほどリンクします）で詳しく書かれています
 
 ESLint のプラグインと比較してファイルやネットワークへの外部アクセスがないことが保証されておりセキュリティ的に優れているところが好きです
 
