@@ -42,12 +42,12 @@ README.md に書かれているように
 
 というように, 配列の書き方を 他のジェネリクスと揃えさせます
 
-![クイック編集のメニューを開いている](/images/deno-lint-plugin-fix.png)
+![VSCodeでクイック編集のメニューを開いている](/images/deno-lint-plugin-fix.png)
 
-`deno lin --fix` やクイック編集の fix で このコードになります
+`deno lint --fix` やクイック編集の fix で このコードになります
 
 ```ts
-const array: Readonly<number> = [1, 2, 3, 4, 5];
+const array: ReadonlyArray<number> = [1, 2, 3, 4, 5];
 ```
 
 なぜ, この書き方が好きか理由は この記事に書きました
